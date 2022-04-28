@@ -726,7 +726,8 @@
 <h3 id="11">1.1 插件工作原理说明<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
 <p><img alt="image-20220216112703978" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216112703978.png" /></p>
 <p>??? tip, hint, important</p>
-<p>要理解此原理图，最好先仔细阅读思考官网教程。</p>
+<div class="highlight"><pre><span></span><code>要理解此原理图，最好先仔细阅读思考官网教程。
+</code></pre></div>
 <h3 id="12-ganglia">1.2 部署ganglia<a class="headerlink" href="#12-ganglia" title="Permanent link">&para;</a></h3>
 <p>说明：部署略，ganglia版本gmond &gt;= v3.4.x ，gmetad v3.4.x ，Ganglia web-2 frontend v3.5.x ，GD v2.x , PHP v5.1 or higher （with: postgres and GD support）同时注意server端还需要先安装以下几个基础包：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>yum install httpd php php-gd php-pgsql rrdtool perl-rrdtool rrdtool-devel rrdtool-python gd python-devel 
