@@ -1,0 +1,1220 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="日常技术笔记">
+      
+      
+        <meta name="author" content="Cyrus0w">
+      
+      
+        <link rel="canonical" href="http://139.196.16.102/Cyrus0w/%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97/%E7%9B%91%E6%8E%A7/ganglia/">
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.11">
+    
+    
+      
+        <title>ganglia监控slurm作业 - Cyrus0w's wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.8c5ef100.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.9647289d.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gangliaslurm" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+  <a href="https://github.com/cyrus0w">
+    Follow <strong>@cyrus0w</strong> on
+    <span class="twemoji github">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </span>
+    <strong>Github</strong>
+  </a>
+
+          </div>
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../../.." title="Cyrus0w&#39;s wiki" class="md-header__button md-logo" aria-label="Cyrus0w's wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Cyrus0w's wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ganglia监控slurm作业
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="" data-md-color-accent=""  aria-label="切换到深色模式"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="切换到深色模式" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6zm0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4zM7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="切换到灯光模式"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="切换到灯光模式" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="清空当前内容" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../.." class="md-tabs__link">
+      主页
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
+        Cyrus0w
+      </a>
+    </li>
+  
+
+  
+
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../../about/" class="md-tabs__link">
+      归档
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Cyrus0w&#39;s wiki" class="md-nav__button md-logo" aria-label="Cyrus0w's wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Cyrus0w's wiki
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        主页
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Cyrus0w
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Cyrus0w" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Cyrus0w
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1">
+          高性能计算
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="高性能计算" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          高性能计算
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1_1" type="checkbox" id="__nav_2_1_1" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_1">
+          运维
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="运维" data-md-level="3">
+        <label class="md-nav__title" for="__nav_2_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          运维
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          ganglia监控slurm作业
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        ganglia监控slurm作业
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    前言
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一、部署
+  </a>
+  
+    <nav class="md-nav" aria-label="一、部署">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 插件工作原理说明
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-ganglia" class="md-nav__link">
+    1.2 部署ganglia
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-postgresql" class="md-nav__link">
+    1.3 部署postgresql数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-jobarchived" class="md-nav__link">
+    1.4 部署配置jobarchived
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-ganglia-web" class="md-nav__link">
+    1.5 设置ganglia 插件web页面
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-pyslurm" class="md-nav__link">
+    1.6 部署PySlurm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-jobmond" class="md-nav__link">
+    1.7 部署配置jobmond
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18" class="md-nav__link">
+    1.8 最终测试
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    结语
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../about/" class="md-nav__link">
+        归档
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    前言
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    一、部署
+  </a>
+  
+    <nav class="md-nav" aria-label="一、部署">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11" class="md-nav__link">
+    1.1 插件工作原理说明
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-ganglia" class="md-nav__link">
+    1.2 部署ganglia
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-postgresql" class="md-nav__link">
+    1.3 部署postgresql数据库
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-jobarchived" class="md-nav__link">
+    1.4 部署配置jobarchived
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#15-ganglia-web" class="md-nav__link">
+    1.5 设置ganglia 插件web页面
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#16-pyslurm" class="md-nav__link">
+    1.6 部署PySlurm
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#17-jobmond" class="md-nav__link">
+    1.7 部署配置jobmond
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#18" class="md-nav__link">
+    1.8 最终测试
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    结语
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+<h1 id="gangliaslurm">ganglia监控slurm作业<a class="headerlink" href="#gangliaslurm" title="Permanent link">&para;</a></h1>
+<hr />
+<div class="toc">
+<ul>
+<li><a href="#gangliaslurm">ganglia监控slurm作业</a><ul>
+<li><a href="#_1">前言</a></li>
+<li><a href="#_2">一、部署</a><ul>
+<li><a href="#11">1.1 插件工作原理说明</a></li>
+<li><a href="#12-ganglia">1.2 部署ganglia</a></li>
+<li><a href="#13-postgresql">1.3 部署postgresql数据库</a></li>
+<li><a href="#14-jobarchived">1.4 部署配置jobarchived</a></li>
+<li><a href="#15-ganglia-web">1.5 设置ganglia 插件web页面</a></li>
+<li><a href="#16-pyslurm">1.6 部署PySlurm</a></li>
+<li><a href="#17-jobmond">1.7 部署配置jobmond</a></li>
+<li><a href="#18">1.8 最终测试</a></li>
+</ul>
+</li>
+<li><a href="#_3">结语</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<hr />
+<h2 id="_1">前言<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<ol>
+<li>官方教程：<a href="https://oss.trac.surfsara.nl/jobmonarch">https://oss.trac.surfsara.nl/jobmonarch</a></li>
+<li>效果图：</li>
+</ol>
+<p><img alt="image-20220216105204055" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216105204055.png" /></p>
+<p><img alt="image-20220216105316072" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216105316072.png" /></p>
+<ul>
+<li>集群和所有作业的概述</li>
+</ul>
+<p><img alt="image-20220216105510116" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216105510116.png" /></p>
+<ul>
+<li>集群概述，作业过滤条件：队列和状态</li>
+</ul>
+<p><img alt="image-20220216105529335" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216105529335.png" /></p>
+<ul>
+<li>工作视图</li>
+</ul>
+<p><img alt="image-20220216105702363" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216105702363.png" /></p>
+<hr />
+<h2 id="_2">一、部署<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="11">1.1 插件工作原理说明<a class="headerlink" href="#11" title="Permanent link">&para;</a></h3>
+<p><img alt="image-20220216112703978" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216112703978.png" /></p>
+<h3 id="12-ganglia">1.2 部署ganglia<a class="headerlink" href="#12-ganglia" title="Permanent link">&para;</a></h3>
+<p>说明：部署略，ganglia版本gmond &gt;= v3.4.x ，gmetad v3.4.x ，Ganglia web-2 frontend v3.5.x ，GD v2.x , PHP v5.1 or higher （with: postgres and GD support）同时注意server端还需要先安装以下几个基础包：</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>yum install httpd php php-gd php-pgsql rrdtool perl-rrdtool rrdtool-devel rrdtool-python gd python-devel 
+</code></pre></div>
+<h3 id="13-postgresql">1.3 部署postgresql数据库<a class="headerlink" href="#13-postgresql" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># 1.在ganglia server端部署数据库</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>yum install postgresql-server postgresql-devel postgresql
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># 2.初始化数据库</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>postgresql-setup initdb
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>systemctl start postgresql
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="c1"># 3.设置密码</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>su - postgres
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>psql
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="se">\p</span>assword
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="se">\q</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="nb">exit</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1"># 4.修改配置文件以便登录数据库时必须使用密码</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>vim /var/lib/pgsql/data/pg_hba.conf
+</code></pre></div>
+<blockquote>
+<p>如图(改为md5):</p>
+<p><img alt="image-20220216134540490" src="../images/ganglia%E7%9B%91%E6%8E%A7slurm%E4%BD%9C%E4%B8%9A/image-20220216134540490.png" /></p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># 5.重启</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>systemctl restart postgresql
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># 6.安装psycopg2（用来python调用postgresql数据库）</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>pip install psycopg2
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># 7.下载插件文件并解压，获取数据库表文件</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>wget http://ftp.surfsara.nl/pub/outgoing/jobmonarch/1.1.2/ganglia_jobmonarch-1.1.2.tar.gz
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>tar xf ganglia_jobmonarch-1.1.2.tar.gz
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1"># 8.创建jobarchive数据库</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>su - postgres
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>createdb jobarchive
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="nb">cd</span> ganglia_jobmonarch-1.1.2
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>psql -f jobarchived/job_dbase.sql jobarchive
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="c1"># 9.查看数据库</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="se">\l</span>
+</code></pre></div>
+<h3 id="14-jobarchived">1.4 部署配置jobarchived<a class="headerlink" href="#14-jobarchived" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># 1.在ganglia服务端下载插件文件并解压(上一步数据库已经下载过)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>wget http://ftp.surfsara.nl/pub/outgoing/jobmonarch/1.1.2/ganglia_jobmonarch-1.1.2.tar.gz
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>tar xf ganglia_jobmonarch-1.1.2.tar.gz
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># 2.部署jobarchived</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nb">cd</span> ganglia_jobmonarch-1.1.2
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>cp jobarchived/jobarchived.conf /etc/jobarchived.conf
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>cp jobarchived/jobarchived.py /usr/local/sbin/jobarchived.py
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># 3. 编辑配置文件（绿色说明处根据实际情况修改）</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>vim /etc/jobarchived.conf
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="o">[</span>DEFAULT<span class="o">]</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># Wether or not to run as a daemon in background</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1">#</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>DAEMONIZE           : <span class="m">0</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># Specify debugging level here (only when _not_ DAEMONIZE)</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1">#</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># 11 = XML: metrics</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="c1"># 10 = XML: host, cluster, grid, ganglia</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># 9  = RRD activity, gmetad config parsing</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="c1"># 8  = RRD file activity</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="c1"># 6  = SQL</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1"># 1  = daemon threading</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1"># 0  = errors</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1">#</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="c1"># default: 0</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="c1">#</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>DEBUG_LEVEL         : <span class="m">1</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="c1"># Enable logging to syslog?</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="c1">#</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>USE_SYSLOG          : <span class="m">1</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="c1"># What level msg&#39;es should be logged to syslog?</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="c1">#</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="c1"># usually: lvl 0 (errors)</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="c1">#</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>SYSLOG_LEVEL            : <span class="m">0</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="c1"># Which facility to use in syslog</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="c1">#</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="c1"># Known:</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="c1">#       KERN, USER, MAIL, DAEMON, AUTH, LPR,</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="c1">#       NEWS, UUCP, CRON and LOCAL0 through LOCAL7</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="c1">#</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>SYSLOG_FACILITY         : DAEMON
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="c1"># Where is the gmetad.conf located</span>
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a><span class="c1">#</span>
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a>GMETAD_CONF         : /etc/ganglia/gmetad.conf         <span class="sb">`</span>gmetad配置文件路径，一般默认在此路径下<span class="sb">`</span> 
+<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>
+<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="c1"># Where to grab XML data from</span>
+<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="c1"># Usually: local gmetad (port 8651)</span>
+<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="c1">#</span>
+<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="c1"># Syntax: &lt;hostname&gt;:&lt;port&gt;</span>
+<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="c1">#</span>
+<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>ARCHIVE_XMLSOURCE       : localhost:8651            <span class="sb">`</span>ganglia服务端地址和端口，因为在本机中，所以这里直接写localhost:8651<span class="sb">`</span>
+<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a>
+<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a><span class="c1"># List of data_source names to archive for</span>
+<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a><span class="c1">#</span>
+<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a><span class="c1"># Syntax: [ &quot;&lt;clustername&gt;&quot;, &quot;&lt;clustername&gt;&quot; ]</span>
+<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a><span class="c1">#</span>
+<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>ARCHIVE_DATASOURCES     : <span class="o">[</span> <span class="s2">&quot;OGSAAS&quot;</span> <span class="o">]</span>              <span class="sb">`</span>ganglia中设置的集群名称<span class="sb">`</span>
+<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>
+<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a><span class="c1"># Amount of hours to store in one single archived rrd</span>
+<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a><span class="c1">#</span>
+<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a><span class="c1"># If you would like less files you can set this bigger</span>
+<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a><span class="c1"># but could degrade performance</span>
+<a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a><span class="c1">#</span>
+<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a><span class="c1"># For now 12 hours seems to work: 2 periods per day</span>
+<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a><span class="c1">#</span>
+<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a>ARCHIVE_HOURS_PER_RRD       : <span class="m">12</span>
+<a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a>
+<a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a><span class="c1"># Which metrics to exclude from archiving</span>
+<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a><span class="c1"># NOTE: This can be a regexp or a string</span>
+<a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a><span class="c1">#</span>
+<a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a>ARCHIVE_EXCLUDE_METRICS     : <span class="s2">&quot;.*Temp.*&quot;</span>, <span class="s2">&quot;.*RPM.*&quot;</span>, <span class="s2">&quot;.*Version.*&quot;</span>, <span class="s2">&quot;.*Tag</span>$<span class="s2">&quot;</span>, <span class="s2">&quot;boottime&quot;</span>, <span class="s2">&quot;gexec&quot;</span>, <span class="s2">&quot;os.*&quot;</span>, <span class="s2">&quot;machine_type&quot;</span>
+<a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a>
+<a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a><span class="c1"># Where to store the archived rrd&#39;s</span>
+<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a><span class="c1"># </span>
+<a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a><span class="c1">#ARCHIVE_PATH           : __JOBARCHIVE_RRDS__</span>
+<a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a>ARCHIVE_PATH            : /usr/local/jobmonarch         <span class="sb">`</span>自定义rrd数据库数据存储目录，后面插件的web页面要调用<span class="sb">`</span>
+<a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a>
+<a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a><span class="c1"># Archive&#39;s SQL dbase to use</span>
+<a id="__codelineno-4-75" name="__codelineno-4-75" href="#__codelineno-4-75"></a><span class="c1">#</span>
+<a id="__codelineno-4-76" name="__codelineno-4-76" href="#__codelineno-4-76"></a><span class="c1"># Syntax: &lt;hostname&gt;/&lt;database&gt;</span>
+<a id="__codelineno-4-77" name="__codelineno-4-77" href="#__codelineno-4-77"></a><span class="c1">#</span>
+<a id="__codelineno-4-78" name="__codelineno-4-78" href="#__codelineno-4-78"></a>JOB_SQL_DBASE           : localhost/jobarchive          <span class="sb">`</span>数据库地址和数据库名称<span class="sb">`</span>
+<a id="__codelineno-4-79" name="__codelineno-4-79" href="#__codelineno-4-79"></a>JOB_SQL_USER                    : postgres              <span class="sb">`</span>数据库用户名<span class="sb">`</span>
+<a id="__codelineno-4-80" name="__codelineno-4-80" href="#__codelineno-4-80"></a>
+<a id="__codelineno-4-81" name="__codelineno-4-81" href="#__codelineno-4-81"></a>JOB_SQL_PASSWORD        : 1qaz2WSX                      <span class="sb">`</span>数据库密码<span class="sb">`</span>
+<a id="__codelineno-4-82" name="__codelineno-4-82" href="#__codelineno-4-82"></a>
+<a id="__codelineno-4-83" name="__codelineno-4-83" href="#__codelineno-4-83"></a><span class="c1"># Timeout for jobs in archive</span>
+<a id="__codelineno-4-84" name="__codelineno-4-84" href="#__codelineno-4-84"></a><span class="c1">#</span>
+<a id="__codelineno-4-85" name="__codelineno-4-85" href="#__codelineno-4-85"></a><span class="c1"># Assume job has already finished while jobarchived was not running</span>
+<a id="__codelineno-4-86" name="__codelineno-4-86" href="#__codelineno-4-86"></a><span class="c1"># after this amount of hours: the it will be finished anyway in the database</span>
+<a id="__codelineno-4-87" name="__codelineno-4-87" href="#__codelineno-4-87"></a><span class="c1">#</span>
+<a id="__codelineno-4-88" name="__codelineno-4-88" href="#__codelineno-4-88"></a>JOB_TIMEOUT         : <span class="m">168</span>
+<a id="__codelineno-4-89" name="__codelineno-4-89" href="#__codelineno-4-89"></a>
+<a id="__codelineno-4-90" name="__codelineno-4-90" href="#__codelineno-4-90"></a><span class="c1"># Location of rrdtool binary</span>
+<a id="__codelineno-4-91" name="__codelineno-4-91" href="#__codelineno-4-91"></a><span class="c1">#</span>
+<a id="__codelineno-4-92" name="__codelineno-4-92" href="#__codelineno-4-92"></a>RRDTOOL             : /usr/bin/rrdtool
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># 4.启动作业归档插件</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>jobarchived.py
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># 5.检查插件是否运行在后台</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>ps aux<span class="p">|</span>grep jobarchived
+</code></pre></div>
+<h3 id="15-ganglia-web">1.5 设置ganglia 插件web页面<a class="headerlink" href="#15-ganglia-web" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># 1.在前面下载解压的目录中，将web模板拷贝到ganglia页面的根目录中</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">cd</span> ganglia_jobmonarch-1.1.2
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>cp -a web/templates/job_monarch /var/www/html/templates
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>mkdir /var/www/html/addons
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>cp -a web/addons/job_monarch /var/www/html/addons
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># 2.配置web页面</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>vi /var/www/html/conf_default.php
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="o">==</span>&gt; <span class="nv">$conf</span><span class="o">[</span><span class="s1">&#39;template_name&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;job_monarch&quot;</span><span class="p">;</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>vim /var/www/html/addons/job_monarch/conf.php
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1">// Show hosts in a jobview by default?</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="c1">//</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nv">$default_showhosts</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// Stop displaying archive search results after SEARCH_RESULT_LIMIT</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1">//</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nv">$SEARCH_RESULT_LIMIT</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="c1">// Show the column job attribute &#39;requested memory&#39;?</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1">//</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nv">$COLUMN_REQUESTED_MEMORY</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1">// Show the column job attribute &#39;queued&#39; (since)?</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="c1">//</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="nv">$COLUMN_QUEUED</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="c1">// Show the column job attribute &#39;nodes&#39; hostnames?</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="c1">//</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="nv">$COLUMN_NODES</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1">// Path to Ganglia&#39;s web frontend root</span>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="c1">//</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="c1">// $GANGLIA_PATH = &quot;/data/ganglia-web-current/&quot;;</span>
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="nv">$GANGLIA_PATH</span> <span class="o">=</span> <span class="s2">&quot;/var/www/html&quot;</span><span class="p">;</span>                           <span class="sb">`这里写ganglia页面的根目录`</span>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="c1">//$GANGLIA_PATH = &quot;../..&quot;;</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="c1">// Format of how to display a date and time in human readable format</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="c1">//</span>
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="nv">$DATETIME_FORMAT</span> <span class="o">=</span> <span class="s2">&quot;%a %d %b %Y %H:%M:%S&quot;</span><span class="p">;</span>
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="c1">// Max size of small clusterimage</span>
+<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="c1">// (250 pixels is same width as Ganglia&#39;s pie chart)</span>
+<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="c1">//</span>
+<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="nv">$SMALL_CLUSTERIMAGE_MAXWIDTH</span> <span class="o">=</span> <span class="mi">300</span><span class="p">;</span>
+<a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a>
+<a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="c1">// The size of a single node in the small clusterimage</span>
+<a id="__codelineno-7-38" name="__codelineno-7-38" href="#__codelineno-7-38"></a><span class="c1">//</span>
+<a id="__codelineno-7-39" name="__codelineno-7-39" href="#__codelineno-7-39"></a><span class="nv">$SMALL_CLUSTERIMAGE_NODEWIDTH</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>
+<a id="__codelineno-7-40" name="__codelineno-7-40" href="#__codelineno-7-40"></a>
+<a id="__codelineno-7-41" name="__codelineno-7-41" href="#__codelineno-7-41"></a><span class="c1">// Max size of small clusterimage</span>
+<a id="__codelineno-7-42" name="__codelineno-7-42" href="#__codelineno-7-42"></a><span class="c1">// (250 pixels is same width as Ganglia&#39;s pie chart)</span>
+<a id="__codelineno-7-43" name="__codelineno-7-43" href="#__codelineno-7-43"></a><span class="c1">//</span>
+<a id="__codelineno-7-44" name="__codelineno-7-44" href="#__codelineno-7-44"></a><span class="nv">$BIG_CLUSTERIMAGE_MAXWIDTH</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+<a id="__codelineno-7-45" name="__codelineno-7-45" href="#__codelineno-7-45"></a>
+<a id="__codelineno-7-46" name="__codelineno-7-46" href="#__codelineno-7-46"></a><span class="c1">// The size of a single node in the small clusterimage</span>
+<a id="__codelineno-7-47" name="__codelineno-7-47" href="#__codelineno-7-47"></a><span class="c1">//</span>
+<a id="__codelineno-7-48" name="__codelineno-7-48" href="#__codelineno-7-48"></a><span class="nv">$BIG_CLUSTERIMAGE_NODEWIDTH</span> <span class="o">=</span> <span class="mi">11</span><span class="p">;</span>
+<a id="__codelineno-7-49" name="__codelineno-7-49" href="#__codelineno-7-49"></a>
+<a id="__codelineno-7-50" name="__codelineno-7-50" href="#__codelineno-7-50"></a><span class="c1">// Max size of small host image</span>
+<a id="__codelineno-7-51" name="__codelineno-7-51" href="#__codelineno-7-51"></a><span class="c1">//</span>
+<a id="__codelineno-7-52" name="__codelineno-7-52" href="#__codelineno-7-52"></a><span class="nv">$SMALL_HOSTIMAGE_MAXWIDTH</span> <span class="o">=</span> <span class="mi">450</span><span class="p">;</span>
+<a id="__codelineno-7-53" name="__codelineno-7-53" href="#__codelineno-7-53"></a>
+<a id="__codelineno-7-54" name="__codelineno-7-54" href="#__codelineno-7-54"></a><span class="c1">// How to mark nodes with a job in clusterimage</span>
+<a id="__codelineno-7-55" name="__codelineno-7-55" href="#__codelineno-7-55"></a><span class="c1">//</span>
+<a id="__codelineno-7-56" name="__codelineno-7-56" href="#__codelineno-7-56"></a><span class="nv">$JOB_NODE_MARKING</span> <span class="o">=</span> <span class="s2">&quot;J&quot;</span><span class="p">;</span>
+<a id="__codelineno-7-57" name="__codelineno-7-57" href="#__codelineno-7-57"></a>
+<a id="__codelineno-7-58" name="__codelineno-7-58" href="#__codelineno-7-58"></a><span class="c1">// How to mark nodes that are &#39;down&#39; in the batch</span>
+<a id="__codelineno-7-59" name="__codelineno-7-59" href="#__codelineno-7-59"></a><span class="c1">//</span>
+<a id="__codelineno-7-60" name="__codelineno-7-60" href="#__codelineno-7-60"></a><span class="nv">$NODE_DOWN_MARKING</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span><span class="p">;</span>
+<a id="__codelineno-7-61" name="__codelineno-7-61" href="#__codelineno-7-61"></a>
+<a id="__codelineno-7-62" name="__codelineno-7-62" href="#__codelineno-7-62"></a><span class="c1">// How to mark nodes that are &#39;offline&#39; in the batch</span>
+<a id="__codelineno-7-63" name="__codelineno-7-63" href="#__codelineno-7-63"></a><span class="c1">//</span>
+<a id="__codelineno-7-64" name="__codelineno-7-64" href="#__codelineno-7-64"></a><span class="nv">$NODE_OFFLINE_MARKING</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="p">;</span>
+<a id="__codelineno-7-65" name="__codelineno-7-65" href="#__codelineno-7-65"></a>
+<a id="__codelineno-7-66" name="__codelineno-7-66" href="#__codelineno-7-66"></a><span class="c1">// Show empty columns in the ClusterImage?</span>
+<a id="__codelineno-7-67" name="__codelineno-7-67" href="#__codelineno-7-67"></a><span class="c1">//</span>
+<a id="__codelineno-7-68" name="__codelineno-7-68" href="#__codelineno-7-68"></a><span class="nv">$SHOW_EMPTY_COLUMN</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+<a id="__codelineno-7-69" name="__codelineno-7-69" href="#__codelineno-7-69"></a>
+<a id="__codelineno-7-70" name="__codelineno-7-70" href="#__codelineno-7-70"></a><span class="c1">// Show empty rows in the ClusterImage?</span>
+<a id="__codelineno-7-71" name="__codelineno-7-71" href="#__codelineno-7-71"></a><span class="c1">//</span>
+<a id="__codelineno-7-72" name="__codelineno-7-72" href="#__codelineno-7-72"></a><span class="nv">$SHOW_EMPTY_ROW</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-7-73" name="__codelineno-7-73" href="#__codelineno-7-73"></a>
+<a id="__codelineno-7-74" name="__codelineno-7-74" href="#__codelineno-7-74"></a><span class="c1">// XML Datasource for Job Monarch</span>
+<a id="__codelineno-7-75" name="__codelineno-7-75" href="#__codelineno-7-75"></a><span class="c1">// by default localhost&#39;s gmetad</span>
+<a id="__codelineno-7-76" name="__codelineno-7-76" href="#__codelineno-7-76"></a><span class="c1">// [syntax: &lt;ip&gt;:&lt;port&gt;]</span>
+<a id="__codelineno-7-77" name="__codelineno-7-77" href="#__codelineno-7-77"></a><span class="c1">//</span>
+<a id="__codelineno-7-78" name="__codelineno-7-78" href="#__codelineno-7-78"></a><span class="nv">$DATA_SOURCE</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1:8652&#39;</span><span class="p">;</span>                            <span class="sb">`这里写本地地址即可`</span>
+<a id="__codelineno-7-79" name="__codelineno-7-79" href="#__codelineno-7-79"></a>
+<a id="__codelineno-7-80" name="__codelineno-7-80" href="#__codelineno-7-80"></a><span class="c1">// Is there a jobarchive?</span>
+<a id="__codelineno-7-81" name="__codelineno-7-81" href="#__codelineno-7-81"></a><span class="c1">//</span>
+<a id="__codelineno-7-82" name="__codelineno-7-82" href="#__codelineno-7-82"></a><span class="nv">$JOB_ARCHIVE</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+<a id="__codelineno-7-83" name="__codelineno-7-83" href="#__codelineno-7-83"></a>
+<a id="__codelineno-7-84" name="__codelineno-7-84" href="#__codelineno-7-84"></a><span class="c1">// Path to the job archive rrd files</span>
+<a id="__codelineno-7-85" name="__codelineno-7-85" href="#__codelineno-7-85"></a><span class="c1">//</span>
+<a id="__codelineno-7-86" name="__codelineno-7-86" href="#__codelineno-7-86"></a><span class="nv">$JOB_ARCHIVE_DIR</span> <span class="o">=</span> <span class="s2">&quot;/user/local/jobmonarch&quot;</span><span class="p">;</span>                <span class="sb">`这里写上一步中设置的rrd数据存放的路径`</span>
+<a id="__codelineno-7-87" name="__codelineno-7-87" href="#__codelineno-7-87"></a>
+<a id="__codelineno-7-88" name="__codelineno-7-88" href="#__codelineno-7-88"></a><span class="c1">// Location of the job archive database</span>
+<a id="__codelineno-7-89" name="__codelineno-7-89" href="#__codelineno-7-89"></a><span class="c1">// [syntax: &lt;ip&gt;/&lt;dbase&gt;]</span>
+<a id="__codelineno-7-90" name="__codelineno-7-90" href="#__codelineno-7-90"></a><span class="c1">//</span>
+<a id="__codelineno-7-91" name="__codelineno-7-91" href="#__codelineno-7-91"></a><span class="nv">$JOB_ARCHIVE_DBASE</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1/jobarchive&quot;</span><span class="p">;</span>                <span class="sb">`数据库地址和数据库名称`</span>
+<a id="__codelineno-7-92" name="__codelineno-7-92" href="#__codelineno-7-92"></a>
+<a id="__codelineno-7-93" name="__codelineno-7-93" href="#__codelineno-7-93"></a><span class="nv">$JOB_ARCHIVE_SQL_USER</span> <span class="o">=</span> <span class="s2">&quot;postgres&quot;</span><span class="p">;</span>                         <span class="sb">`数据库用户名`</span>
+<a id="__codelineno-7-94" name="__codelineno-7-94" href="#__codelineno-7-94"></a><span class="nv">$JOB_ARCHIVE_SQL_PASSWORD</span> <span class="o">=</span> <span class="s2">&quot;1qaz2WSX&quot;</span><span class="p">;</span>                     <span class="sb">`数据库密码`</span>
+<a id="__codelineno-7-95" name="__codelineno-7-95" href="#__codelineno-7-95"></a>
+<a id="__codelineno-7-96" name="__codelineno-7-96" href="#__codelineno-7-96"></a><span class="c1">// Include cluster specific settings here, </span>
+<a id="__codelineno-7-97" name="__codelineno-7-97" href="#__codelineno-7-97"></a><span class="c1">// they will override any (global) settings above</span>
+<a id="__codelineno-7-98" name="__codelineno-7-98" href="#__codelineno-7-98"></a><span class="c1">// on a per-cluster basis, where available.</span>
+<a id="__codelineno-7-99" name="__codelineno-7-99" href="#__codelineno-7-99"></a><span class="c1">//</span>
+<a id="__codelineno-7-100" name="__codelineno-7-100" href="#__codelineno-7-100"></a><span class="c1">//$CLUSTER_CONFS[&quot;Example Cluster&quot;] = &quot;./clusterconf/example.php&quot;;</span>
+<a id="__codelineno-7-101" name="__codelineno-7-101" href="#__codelineno-7-101"></a><span class="nv">$CLUSTER_CONFS</span><span class="p">[</span><span class="s2">&quot;LISA Cluster&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;./clusterconf/lisa.php&quot;</span><span class="p">;</span>
+<a id="__codelineno-7-102" name="__codelineno-7-102" href="#__codelineno-7-102"></a><span class="c1">//</span>
+<a id="__codelineno-7-103" name="__codelineno-7-103" href="#__codelineno-7-103"></a><span class="cp">?&gt;</span><span class="x"></span>
+</code></pre></div>
+<h3 id="16-pyslurm">1.6 部署PySlurm<a class="headerlink" href="#16-pyslurm" title="Permanent link">&para;</a></h3>
+<p>说明：在slurm服务端部署PySlurm(根据不同slurm版本部署对应的pyslurm)官网说明如下：
+<a href="https://github.com/PySlurm/pyslurm/tree/basvandervlies-20.11">https://github.com/PySlurm/pyslurm/tree/basvandervlies-20.11</a></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># 1.安装Cython</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>yum install Cython
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># 2.根据官方说明进行部署</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># 3.检查测试(有相关的json数据显示表示部署成功)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="nb">cd</span> examples
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>./node_list.py
+</code></pre></div>
+<h3 id="17-jobmond">1.7 部署配置jobmond<a class="headerlink" href="#17-jobmond" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 1.在slurm服务端下载插件文件并解压</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>wget http://ftp.surfsara.nl/pub/outgoing/jobmonarch/1.1.2/ganglia_jobmonarch-1.1.2.tar.gz
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>tar xf ganglia_jobmonarch-1.1.2.tar.gz
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># 2.部署jobmond</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="nb">cd</span> ganglia_jobmonarch-1.1.2
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>cp -a jobmond/jobmond.py /usr/local/sbin/jobmond.py
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>cp -a jobmond/jobmond.conf /etc/jobmond.conf
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="c1"># 3.编辑配置文件</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>vim /etc/jobmond.conf
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="o">[</span>DEFAULT<span class="o">]</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="c1"># Specify debugging level here;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1">#</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># 10 = gemtric cmd&#39;s</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1">#</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>DEBUG_LEVEL     : <span class="m">0</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="c1"># Wether or not to run as a daemon in background</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1">#</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>DAEMONIZE       : <span class="m">1</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="c1"># What Batch type is the system</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="c1"># </span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="c1"># Currently supported: pbs, slurm, sge (experimental), lsf (experimental)</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1">#</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>BATCH_API       : slurm                                         <span class="sb">`</span>监控的调度系统类型<span class="sb">`</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="c1"># Which Batch server to monitor</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="c1">#</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>BATCH_SERVER        : localhost                                 <span class="sb">`</span>slurm服务端地址<span class="sb">`</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="c1"># Which queue(s) to report jobs of</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="c1"># (optional)</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="c1">#</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="c1">#QUEUE          : long, short</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="c1"># How many seconds interval for polling of jobs</span>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="c1">#</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="c1"># this will effect directly how accurate the</span>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="c1"># end time of a job can be determined</span>
+<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="c1">#</span>
+<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>BATCH_POLL_INTERVAL : <span class="m">30</span>
+<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>
+<a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a><span class="c1"># Location of gmond.conf</span>
+<a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="c1">#</span>
+<a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="c1"># Default: /etc/gmond.conf      </span>
+<a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>                                                                <span class="sb">`</span>这里没有设置，会默认寻找/etc/gmond.conf<span class="sb">`</span>
+<a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a><span class="c1">#</span>
+<a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="c1"># DEPRECATED!:      use GMETRIC_TARGET!</span>
+<a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="c1">#</span>
+<a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="c1">#GMOND_CONF     : /etc/gmond.conf</span>
+<a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a><span class="c1">#</span>
+<a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="c1"># Location of gmetric binary</span>
+<a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a><span class="c1">#</span>
+<a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a><span class="c1"># Default: /usr/bin/gmetric</span>
+<a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a><span class="c1">#</span>
+<a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a><span class="c1"># DEPRECATED!:      use GMETRIC_TARGET!</span>
+<a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="c1">#</span>
+<a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a><span class="c1">#GMETRIC_BINARY     : /usr/bin/gmetric</span>
+<a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a>
+<a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a><span class="c1"># Target of Gmetric&#39;s: where should we report to</span>
+<a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a><span class="c1"># (usually: your udp_send_channel from gmond)</span>
+<a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="c1">#</span>
+<a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a><span class="c1"># Syntax: &lt;ip&gt;:&lt;port&gt;</span>
+<a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a><span class="c1">#</span>
+<a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a><span class="c1">#GMETRIC_TARGET     : 172.22.100.30:8649</span>
+<a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a>                                                                <span class="sb">`</span>这里不设置，会自动获取gmond.conf中上报给ganglia服务端的地址<span class="sb">`</span>
+<a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a><span class="c1"># Enable logging to syslog?</span>
+<a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a><span class="c1">#</span>
+<a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a>USE_SYSLOG                      : <span class="m">1</span>
+<a id="__codelineno-10-61" name="__codelineno-10-61" href="#__codelineno-10-61"></a>
+<a id="__codelineno-10-62" name="__codelineno-10-62" href="#__codelineno-10-62"></a><span class="c1"># What level msg&#39;es should be logged to syslog?</span>
+<a id="__codelineno-10-63" name="__codelineno-10-63" href="#__codelineno-10-63"></a><span class="c1">#</span>
+<a id="__codelineno-10-64" name="__codelineno-10-64" href="#__codelineno-10-64"></a><span class="c1"># usually: lvl 0 (errors)</span>
+<a id="__codelineno-10-65" name="__codelineno-10-65" href="#__codelineno-10-65"></a><span class="c1">#</span>
+<a id="__codelineno-10-66" name="__codelineno-10-66" href="#__codelineno-10-66"></a>SYSLOG_LEVEL                    : <span class="m">0</span>
+<a id="__codelineno-10-67" name="__codelineno-10-67" href="#__codelineno-10-67"></a>
+<a id="__codelineno-10-68" name="__codelineno-10-68" href="#__codelineno-10-68"></a><span class="c1"># Which facility to use in syslog</span>
+<a id="__codelineno-10-69" name="__codelineno-10-69" href="#__codelineno-10-69"></a><span class="c1">#</span>
+<a id="__codelineno-10-70" name="__codelineno-10-70" href="#__codelineno-10-70"></a><span class="c1"># Known:</span>
+<a id="__codelineno-10-71" name="__codelineno-10-71" href="#__codelineno-10-71"></a><span class="c1">#       KERN, USER, MAIL, DAEMON, AUTH, LPR,</span>
+<a id="__codelineno-10-72" name="__codelineno-10-72" href="#__codelineno-10-72"></a><span class="c1">#       NEWS, UUCP, CRON and LOCAL0 through LOCAL7</span>
+<a id="__codelineno-10-73" name="__codelineno-10-73" href="#__codelineno-10-73"></a><span class="c1">#</span>
+<a id="__codelineno-10-74" name="__codelineno-10-74" href="#__codelineno-10-74"></a>SYSLOG_FACILITY                 : DAEMON
+<a id="__codelineno-10-75" name="__codelineno-10-75" href="#__codelineno-10-75"></a>
+<a id="__codelineno-10-76" name="__codelineno-10-76" href="#__codelineno-10-76"></a>
+<a id="__codelineno-10-77" name="__codelineno-10-77" href="#__codelineno-10-77"></a><span class="c1"># Wether or not to detect differences in</span>
+<a id="__codelineno-10-78" name="__codelineno-10-78" href="#__codelineno-10-78"></a><span class="c1"># time from Torque server and local time.</span>
+<a id="__codelineno-10-79" name="__codelineno-10-79" href="#__codelineno-10-79"></a><span class="c1">#</span>
+<a id="__codelineno-10-80" name="__codelineno-10-80" href="#__codelineno-10-80"></a><span class="c1"># Ideally both machines (if not the same)</span>
+<a id="__codelineno-10-81" name="__codelineno-10-81" href="#__codelineno-10-81"></a><span class="c1"># should have the same time (via ntp or whatever)</span>
+<a id="__codelineno-10-82" name="__codelineno-10-82" href="#__codelineno-10-82"></a><span class="c1">#</span>
+<a id="__codelineno-10-83" name="__codelineno-10-83" href="#__codelineno-10-83"></a>DETECT_TIME_DIFFS   : <span class="m">1</span>
+<a id="__codelineno-10-84" name="__codelineno-10-84" href="#__codelineno-10-84"></a>
+<a id="__codelineno-10-85" name="__codelineno-10-85" href="#__codelineno-10-85"></a><span class="c1"># Regexp style hostname translation</span>
+<a id="__codelineno-10-86" name="__codelineno-10-86" href="#__codelineno-10-86"></a><span class="c1">#</span>
+<a id="__codelineno-10-87" name="__codelineno-10-87" href="#__codelineno-10-87"></a><span class="c1"># Usefull if your Batch hostnames are not the same as your</span>
+<a id="__codelineno-10-88" name="__codelineno-10-88" href="#__codelineno-10-88"></a><span class="c1"># Ganglia hostnames (different network interfaces)</span>
+<a id="__codelineno-10-89" name="__codelineno-10-89" href="#__codelineno-10-89"></a><span class="c1">#</span>
+<a id="__codelineno-10-90" name="__codelineno-10-90" href="#__codelineno-10-90"></a><span class="c1"># Syntax: /orig/new/, /orig/new/</span>
+<a id="__codelineno-10-91" name="__codelineno-10-91" href="#__codelineno-10-91"></a><span class="c1">#</span>
+<a id="__codelineno-10-92" name="__codelineno-10-92" href="#__codelineno-10-92"></a>BATCH_HOST_TRANSLATE    : 
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># 4.启动作业监控插件</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>jobmond.py
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># 注意：此时会报错，根据报错的行，有三处需要修改，第一处是将1374行更改为：status_long = self.getAttr( attrs, &#39;job_state&#39; )    ；后面俩处注释掉for循环几行代码</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># 之后再启动即可</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># 5.检查插件是否运行在后台</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>ps aux<span class="p">|</span>grep jobmond
+</code></pre></div>
+<h3 id="18">1.8 最终测试<a class="headerlink" href="#18" title="Permanent link">&para;</a></h3>
+<p>浏览器强刷ganglia页面</p>
+<hr />
+<h2 id="_3">结语<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>感谢您花费时间阅读这篇教程，如果喜欢可以帮忙转发或收藏！祝您在这里记录、阅读、分享愉快！</p>
+<p>作者 <a href="https://github.com/cyrus0w">@cyrus0w</a>
+2022 年 2月 16日</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" data-md-state="hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            回到页面顶部
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="页脚">
+      
+        
+        <a href="../../../.." class="md-footer__link md-footer__link--prev" aria-label="上一页: 主页" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              主页
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../../../about/" class="md-footer__link md-footer__link--next" aria-label="下一页: 归档" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              归档
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2016 - 2022 Cyrus0w
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    <a href="https://github.com/cyrus0w" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "toc.follow", "navigation.top", "announce.dismiss"], "search": "../../../../assets/javascripts/workers/search.2a1c317c.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.config.lang": "ja", "search.config.pipeline": "trimmer, stemmer", "search.config.separator": "[\\uff0c\\u3002]+", "search.placeholder": "\u641c\u7d22", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version.title": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.748e2769.min.js"></script>
+      
+    
+  </body>
+</html>

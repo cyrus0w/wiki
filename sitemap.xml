@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>http://139.196.16.102/</loc>
+         <lastmod>2022-04-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://139.196.16.102/FAQ/</loc>
+         <lastmod>2022-04-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://139.196.16.102/about/</loc>
+         <lastmod>2022-04-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>http://139.196.16.102/Cyrus0w/%E9%AB%98%E6%80%A7%E8%83%BD%E8%AE%A1%E7%AE%97/%E7%9B%91%E6%8E%A7/ganglia/</loc>
+         <lastmod>2022-04-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
