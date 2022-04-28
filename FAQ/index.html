@@ -575,21 +575,21 @@
 <p>1.通过页面Altair Compute Manager登录pbsadmin/1qaz2wsx，提交一个图形作业</p>
 <p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210104105728338.png" alt="image-20210104105728338"  /></p>
 <p>2.进入监控，选中提交的作业，点击图形，查看下方的计算节点</p>
-<p><img alt="image-20210104110315545" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210104110315545.png" /></p>
+<p><img alt="image-20210104110315545" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210104110315545.png" /></p>
 <p>3.命令行su - pbsadmin，并ssh到上面的计算节点，本次案例中会出现此过程非常缓慢，考虑是gpfs并行文件系统存在异常。</p>
 <p>4.利用命令mmfsadm dump waiter 检查gpfs文件系统延迟情况，以下是截图详解</p>
-<p><img alt="image-20210104113447543" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210104113447543.png" /></p>
+<p><img alt="image-20210104113447543" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210104113447543.png" /></p>
 <p>5.联系用户尝试重启延迟的节点，重启后检查。本案例最终排查到gpfs server02节点延迟很大，重启后还是延迟，但桌面可以打开了，让客户联系存储硬件工程师检查一下存储链路是否正常。</p>
 <hr />
 <h2 id="stale-file-handle">二、作业目录报stale file handle错误<a class="headerlink" href="#stale-file-handle" title="Permanent link">&para;</a></h2>
 <p>报错截图：</p>
-<p><img alt="image-20210114095127461" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210114095127461.png" /></p>
+<p><img alt="image-20210114095127461" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114095127461.png" /></p>
 <p>问题分析：</p>
 <p>从报错截图可以看到作业到共享目录出现错误，出错的节点分别为caeope56、caeope57、caeope60。说明当时这三个节点gpfs挂载出现问题，此时可先ssh到三个节点上df -h看下存储还在不在，再到CAESNS01节点上查看gpfs日志，最后到各问题节点上看gpfs日志，综合双方日志进行分析。</p>
 <p>问题解决：</p>
-<p>先说明一下，gpfs日志主要关注俩个，一个是gpfs重启前的日志，即/var/adm/ras/mmfs.log.previous，一个是gpfs重启后的日志，即/var/adm/ras/mmfs.log.latest。这里可以先到CAESNS01节点上查看gpfs日志，用命令cat /var/adm/ras/mmfs.log.latest |grep -i caeope60，关注问题出现时间点和内容，<img alt="image-20210114100438184" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210114100438184.png" /></p>
+<p>先说明一下，gpfs日志主要关注俩个，一个是gpfs重启前的日志，即/var/adm/ras/mmfs.log.previous，一个是gpfs重启后的日志，即/var/adm/ras/mmfs.log.latest。这里可以先到CAESNS01节点上查看gpfs日志，用命令cat /var/adm/ras/mmfs.log.latest |grep -i caeope60，关注问题出现时间点和内容，<img alt="image-20210114100438184" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114100438184.png" /></p>
 <p>再ssh到问题节点，通过gpfs日志查到gpfs重启的时间点，然后根据时间点再去查Linux系统在那个时间点是不是有问题，Linux系统日志在/var/log/messages。本案例最终查到是用户提交的作业模型过大造成内存溢出导致gpfs重启。</p>
-<p><img alt="image-20210114100642193" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210114100642193.png" /></p>
+<p><img alt="image-20210114100642193" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114100642193.png" /></p>
 <hr />
 <h2 id="wait">三、作业处于一直排队或wait状态如何处理？<a class="headerlink" href="#wait" title="Permanent link">&para;</a></h2>
 <p>1、如果作业是排队状态，则可能是正常的也可能是不正常的；如果作业处于wait状态，则一定是不正常的。</p>
@@ -621,7 +621,7 @@
 <p>vim start.sh</p>
 <p><strong>license相关</strong>：</p>
 <p>export CDLMD_LICENSE_FILE=/gs/apps/CCM1406/ccm1406R8license.dat</p>
-<p><img alt="image-20210114101758695" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210114101758695.png" /></p>
+<p><img alt="image-20210114101758695" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114101758695.png" /></p>
 <p><strong>mpi相关：</strong></p>
 <h1 id="ib">设置为走ib网络<a class="headerlink" href="#ib" title="Permanent link">&para;</a></h1>
 <p>export MPIRUN_OPTIONS="-v -IBV -cpu_bind -e MPI_IB_PKEY=0x8df1,0x7fff"</p>
@@ -635,7 +635,7 @@
 <p><code>恢复节点资源池：</code></p>
 <p>1.查看节点当前资源池名称。（此步可选）</p>
 <p>pestat|grep -i caeope49</p>
-<p><img alt="image-20210114101928460" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210114101928460.png" /></p>
+<p><img alt="image-20210114101928460" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114101928460.png" /></p>
 <p>2.查看节点资源池和其他信息。（此步可选）</p>
 <p>qmgr -c "p n CAEOPE49"</p>
 <p>qmgr -c "p n CAEOPE50"</p>
@@ -663,7 +663,7 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>vim /var/spool/PBS/sched_priv/sched_config
 </code></pre></div>
 <blockquote>
-<p><img alt="image-20210413105215356" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210413105215356.png" /></p>
+<p><img alt="image-20210413105215356" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210413105215356.png" /></p>
 <p>检查这里是否有新软件名，没有则添加</p>
 </blockquote>
 <p>7.查看资源池调整后信息</p>
@@ -697,7 +697,7 @@ strace df -h</code></p>
 <p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114103200234.png" alt="image-20210114103200234" style="zoom: 80%;" /></p>
 <p>第二种：通过图形界面查看输出日志</p>
 <p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114103234413.png" alt="image-20210114103234413" style="zoom: 50%;" /></p>
-<p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114103304957.png" alt="image-20210114103304957" style="zoom:67%;" /><img alt="image-20210119205507521" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210119205507521.png" /></p>
+<p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210114103304957.png" alt="image-20210114103304957" style="zoom:67%;" /><img alt="image-20210119205507521" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210119205507521.png" /></p>
 <p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210119205507521.png" alt="image-20210119205507521" style="zoom:80%;" /></p>
 <p><strong>华为云环境中提交多节点作业报错解决：</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>touch /etc/profile.d/mpi.sh
@@ -807,9 +807,9 @@ cp qstat.18 qstat</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>vim /var/spool/PBS/sched_priv/sched_config  <span class="c1">#(可选)关于license配置，如果license是无限点数，这里不用修改，修改参考word：D:\cyrus\奥工科技\项目汇总\奇瑞（运维）\pbs license调度.docx</span>
 </code></pre></div>
 <blockquote>
-<p><img alt="image-20210521135306196" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210521135306196.png" />
+<p><img alt="image-20210521135306196" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210521135306196.png" />
 注意，上面添加的红框名称要和上一步中添加的名称一致。</p>
-<p><img alt="image-20210521135601246" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210521135601246.png" />
+<p><img alt="image-20210521135601246" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210521135601246.png" />
 注意，这里红框名称也要和前面一致，然后加上license点数获取脚本的路径</p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 编写license点数获取脚本（脚本内容参考前面写的配置上的脚本）（此脚本用来获取当前license管理器中剩余的点数）</span>
@@ -833,7 +833,7 @@ cp qstat.18 qstat</p>
 <a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>vim submittime/presubmit.py
 </code></pre></div>
 <blockquote>
-<p><img alt="image-20210521155848671" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210521155848671.png" /></p>
+<p><img alt="image-20210521155848671" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210521155848671.png" /></p>
 <p>2.修改配置文件（添加什么软件就按情况添加到配置文件中）</p>
 <p><div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>&lt;Application <span class="nv">id</span><span class="o">=</span><span class="s2">&quot;Preonlab&quot;</span>&gt;  <span class="c1">#这里id后面修改成上一步中app-actions-Preonlab.xml名称里的Preonlab</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>           &lt;ApplicationVersions&gt;
@@ -1018,7 +1018,7 @@ cp qstat.18 qstat</p>
 </code></pre></div>
 <blockquote>
 <p>添加 walltime=1:00:00;</p>
-<p><img alt="image-20210318105156959" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210318105156959.png" /></p>
+<p><img alt="image-20210318105156959" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210318105156959.png" /></p>
 <p>或者修改</p>
 <p><img src="png/%E5%A5%87%E7%91%9EFAQ/image-20210330152732479.png" alt="image-20210330152732479" style="zoom:67%;" /></p>
 </blockquote>
@@ -1028,7 +1028,7 @@ cp qstat.18 qstat</p>
 <a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>qstat -xf 作业id<span class="p">|</span>grep stage
 </code></pre></div>
 <blockquote>
-<p><img alt="image-20210318131654838" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210318131654838.png" /></p>
+<p><img alt="image-20210318131654838" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210318131654838.png" /></p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">#进入到作业输出目录（tab键补全）</span>
 <a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nb">cd</span> /gs/stage/xushuang/T19C_M2EM_SpindLoad_80_0318-03-1
@@ -1038,13 +1038,13 @@ cp qstat.18 qstat</p>
 <a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>cat T19C_M2EM_SpindLoad_80_0318.o318611
 </code></pre></div>
 <blockquote>
-<p><img alt="image-20210318132454580" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210318132454580.png" /></p>
+<p><img alt="image-20210318132454580" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210318132454580.png" /></p>
 <p>如图是标准输出日志的内容，一般情况中，最后都是提示作业正常完成，可以不用管了。但是这个截图上面报了一个错，意思是模型发生致命错误，这种可根据报错内容中的提示“.out”，打开当前目录中.out文件查看具体详情，如果报错是关于应用的，则截图.out文件内容，让奇瑞找应用厂商排查。</p>
 </blockquote>
 <hr />
 <h2 id="caelnse1pbs">十九、caelnse1上pbs无法重启<a class="headerlink" href="#caelnse1pbs" title="Permanent link">&para;</a></h2>
 <p>报错如图：</p>
-<p><img alt="image-20210321170526387" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210321170526387.png" /></p>
+<p><img alt="image-20210321170526387" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210321170526387.png" /></p>
 <p>解决：</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="nb">cd</span> /opt/pbs/bin
 <a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>cp qstat_18.2 qstat
@@ -1113,7 +1113,7 @@ if str(model).strip() == 'T21' :
 </code></pre></div>
 <blockquote>
 <p>加一行 job_sort_key: "higher HIGH" ALL</p>
-<p><img alt="image-20210730140044487" src="../png/%E5%A5%87%E7%91%9EFAQ/image-20210730140044487.png" /></p>
+<p><img alt="image-20210730140044487" src="png/%E5%A5%87%E7%91%9EFAQ/image-20210730140044487.png" /></p>
 </blockquote>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1"># 之后按顺序执行</span>
 <a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="m">1</span>.qmgr -c <span class="s2">&quot;set server scheduling =false&quot;</span>
@@ -1333,6 +1333,8 @@ Crash --&gt; [*]</code></pre>
     
     
       <script src="../assets/javascripts/bundle.748e2769.min.js"></script>
+      
+        <script src="../js/baidu-tongji.js"></script>
       
     
   </body>
